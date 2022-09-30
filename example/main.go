@@ -44,4 +44,5 @@ func main() {
 
 func testBook(svc i18n.I18n, total int) {
 	fmt.Println(svc.GetString("test.book", i18n.PluralCount, total, "total", total))
+	fmt.Println(svc.GetString("test.book",i18n.KeyValue().Plural(total).Add("total", total)...))
 }

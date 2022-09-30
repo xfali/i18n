@@ -36,9 +36,9 @@ type defaultI18n struct {
 	dataFuncs []func(bundle *i18n.Bundle)
 }
 
-type Opt func(*defaultI18n)
+type opt func(*defaultI18n)
 
-func New(opts ...Opt) *defaultI18n {
+func New(opts ...opt) *defaultI18n {
 	ret := &defaultI18n{
 	}
 

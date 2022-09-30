@@ -33,7 +33,7 @@ type options struct{}
 var Options options
 
 // 配置默认语言
-func (o options) DefaultLanguage(lang language.Tag) Opt {
+func (o options) DefaultLanguage(lang language.Tag) opt {
 	return func(n *defaultI18n) {
 		n.bundle = i18n.NewBundle(lang)
 		n.lang = lang.String()
@@ -42,7 +42,7 @@ func (o options) DefaultLanguage(lang language.Tag) Opt {
 }
 
 // 注册反序列化函数
-func (o options) RegisterUnmarshalFunc(format string, unmarshalFunc func(data []byte, v interface{}) error) Opt {
+func (o options) RegisterUnmarshalFunc(format string, unmarshalFunc func(data []byte, v interface{}) error) opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			bundle.RegisterUnmarshalFunc(format, unmarshalFunc)
@@ -51,7 +51,7 @@ func (o options) RegisterUnmarshalFunc(format string, unmarshalFunc func(data []
 }
 
 // 注册支持yaml格式
-func (o options) SupportYaml() Opt {
+func (o options) SupportYaml() opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			bundle.RegisterUnmarshalFunc("yaml", yaml.Unmarshal)
@@ -60,7 +60,7 @@ func (o options) SupportYaml() Opt {
 }
 
 // 注册支持toml格式
-func (o options) SupportToml() Opt {
+func (o options) SupportToml() opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			bundle.RegisterUnmarshalFunc("toml", toml.Unmarshal)
@@ -69,7 +69,7 @@ func (o options) SupportToml() Opt {
 }
 
 // 从文件加载message数据
-func (o options) LoadMessageFile(filepath string) Opt {
+func (o options) LoadMessageFile(filepath string) opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			bundle.MustLoadMessageFile(filepath)
@@ -78,7 +78,7 @@ func (o options) LoadMessageFile(filepath string) Opt {
 }
 
 // 从目录加载message数据
-func (o options) LoadMessageDir(dir string, filter func(path string) bool) Opt {
+func (o options) LoadMessageDir(dir string, filter func(path string) bool) opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			_ = filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
@@ -101,7 +101,7 @@ func (o options) LoadMessageDir(dir string, filter func(path string) bool) Opt {
 }
 
 // 从data加载message数据
-func (o options) LoadMessageData(data []byte, lang, format string) Opt {
+func (o options) LoadMessageData(data []byte, lang, format string) opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			bundle.MustParseMessageFileBytes(data, fmt.Sprintf("%s.%s", lang, format))
@@ -110,7 +110,7 @@ func (o options) LoadMessageData(data []byte, lang, format string) Opt {
 }
 
 // 从reader加载message数据
-func (o options) LoadMessageReader(r io.Reader, lang, format string) Opt {
+func (o options) LoadMessageReader(r io.Reader, lang, format string) opt {
 	return func(n *defaultI18n) {
 		n.dataFuncs = append(n.dataFuncs, func(bundle *i18n.Bundle) {
 			d, err := ioutil.ReadAll(r)
