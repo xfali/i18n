@@ -9,5 +9,13 @@
     "description": "Plural Count test",
     "one": "{{.total}} book",
     "other": "{{.total}} books"
+  },
+  {
+    "id": "test.pen",
+    "description": "Plural Count test2",
+    "one": "[[.total]] pen",
+    "other": "[[.total]] pens",
+    "leftDelim": "[[",
+    "rightDelim": "]]"
   }
 ]

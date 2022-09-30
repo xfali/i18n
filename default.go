@@ -22,6 +22,10 @@ import (
 	"sync"
 )
 
+const (
+	PluralCount = "i18n.PluralCount"
+)
+
 var (
 	defaultLanguage = language.Chinese
 )
@@ -39,8 +43,7 @@ type defaultI18n struct {
 type opt func(*defaultI18n)
 
 func New(opts ...opt) *defaultI18n {
-	ret := &defaultI18n{
-	}
+	ret := &defaultI18n{}
 
 	for _, opt := range opts {
 		opt(ret)
@@ -61,6 +64,7 @@ func New(opts ...opt) *defaultI18n {
 	return ret
 }
 
+// Localize
 // Switch language
 func (s *defaultI18n) Localize(lang string) error {
 	s.lock.Lock()
@@ -73,6 +77,7 @@ func (s *defaultI18n) Localize(lang string) error {
 	return nil
 }
 
+// GetString
 // Get i18n string
 func (s *defaultI18n) GetString(id string, kvs ...interface{}) (message string) {
 	s.lock.RLock()
@@ -101,6 +106,22 @@ func (s *defaultI18n) GetString(id string, kvs ...interface{}) (message string) 
 		conf.TemplateData = tmplData
 	}
 	str, err := s.localizer.Localize(conf)
+	if err != nil {
+		return id
+	}
+
+	return str
+}
+
+func (s *defaultI18n) GetStringEx(id string, data interface{}, pluralCount interface{}) (message string) {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
+
+	str, err := s.localizer.Localize(&i18n.LocalizeConfig{
+		MessageID:    id,
+		TemplateData: data,
+		PluralCount:  pluralCount,
+	})
 	if err != nil {
 		return id
 	}

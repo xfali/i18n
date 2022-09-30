@@ -16,22 +16,25 @@
 
 package i18n
 
-const(
-	PluralCount = "i18n.PluralCount"
-)
-
 type I18n interface {
-	// 指定使用语言
+	// Localize 指定使用语言
 	// lang: 语言 zh | en | jp ...
 	// err: 切换语言错误，如不支持该语言等
 	Localize(lang string) (err error)
 
-	// 获得i18n字符串
+	// GetString 获得i18n字符串
 	// id: i18n message ID
 	// kvs: 增加参数，格式为key value对，key为string，value为interface
 	// 注意：
 	// 	1、必须为偶数；
 	// 	2、同时参数如果key为i18n.PluralCount，则value作为判定plural选择i18n message的依据
-	// msg: 返回i18n字符串
+	// message: 返回i18n字符串
 	GetString(id string, kvs ...interface{}) (message string)
+
+	// GetStringEx 通过制定数据及pluralCount获得i18n字符串
+	// id: i18n message ID
+	// data: 参数数据，用于向message填充参数，用法同go template
+	// pluralCount: 用于选择复数匹配字符串，值为参数替换的对象
+	// message: 返回i18n字符串
+	GetStringEx(id string, data interface{}, pluralCount interface{}) (message string)
 }
