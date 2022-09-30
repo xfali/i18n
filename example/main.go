@@ -28,10 +28,20 @@ func main() {
 		return path.Ext(file) == ".json"
 	}))
 	fmt.Println(svc.GetString("test.hello"))
+	testBook(svc, 1)
+	testBook(svc, 2)
+	testBook(svc, 3)
 	err := svc.Localize("en-US")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	fmt.Println(svc.GetString("test.hello"))
+	testBook(svc, 1)
+	testBook(svc, 2)
+	testBook(svc, 3)
+}
+
+func testBook(svc i18n.I18n, total int) {
+	fmt.Println(svc.GetString("test.book", i18n.PluralCount, total, "total", total))
 }

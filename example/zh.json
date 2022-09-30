@@ -3,5 +3,11 @@
     "id": "test.hello",
     "description": "for test",
     "other": "你好"
+  },
+  {
+    "id": "test.book",
+    "description": "Plural Count test",
+    "one": "{{.total}}本书",
+    "other": "{{.total}}本书"
   }
 ]
