@@ -16,12 +16,7 @@
 
 package i18n
 
-type I18n interface {
-	// Localize 指定使用语言
-	// lang: 语言 zh | en | jp ...
-	// err: 切换语言错误，如不支持该语言等
-	Localize(lang string) (err error)
-
+type Stringer interface {
 	// GetString 获得i18n字符串
 	// id: i18n message ID
 	// kvs: 增加参数，格式为key value对，key为string，value为interface
@@ -38,3 +33,20 @@ type I18n interface {
 	// message: 返回i18n字符串
 	GetStringEx(id string, data interface{}, pluralCount interface{}) (message string)
 }
+
+type I18n interface {
+	// Localize 指定使用语言
+	// lang: 语言 zh | en | jp ...
+	// err: 切换语言错误，如不支持该语言等
+	Localize(lang string) (err error)
+
+	// GetLocalizer 获得Localizer
+	// lang: 语言 zh | en | jp ...
+	// localizer Localizer
+	// err: 切换语言错误，如不支持该语言等
+	GetLocalizer(lang string) (localizer Localizer, err error)
+
+	Stringer
+}
+
+type Localizer Stringer

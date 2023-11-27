@@ -27,6 +27,7 @@ func main() {
 	svc := i18n.New(i18n.Options.LoadMessageDir(".", func(file string) bool {
 		return path.Ext(file) == ".json"
 	}))
+	fmt.Println("=========================== Localize zh-CN ===========================")
 	fmt.Println(svc.GetString("test.hello"))
 	fmt.Println(svc.GetStringEx("test.hello", nil, nil))
 	testData(svc, "test.book", 1)
@@ -35,6 +36,15 @@ func main() {
 	testData(svc, "test.pen", 1)
 	testData(svc, "test.pen", 2)
 	testData(svc, "test.pen", 3)
+	fmt.Println("=========================== Localizer ===========================")
+	localizer, _ := svc.GetLocalizer("zh-CN")
+	testData(localizer, "test.book", 1)
+	testData(localizer, "test.book", 2)
+	testData(localizer, "test.book", 3)
+	testData(localizer, "test.pen", 1)
+	testData(localizer, "test.pen", 2)
+	testData(localizer, "test.pen", 3)
+
 	err := svc.Localize("en-US")
 	if err != nil {
 		fmt.Println(err)
@@ -49,9 +59,17 @@ func main() {
 	testData(svc, "test.pen", 1)
 	testData(svc, "test.pen", 2)
 	testData(svc, "test.pen", 3)
+	fmt.Println("=========================== Localizer ===========================")
+	localizer, _ = svc.GetLocalizer("en-US")
+	testData(localizer, "test.book", 1)
+	testData(localizer, "test.book", 2)
+	testData(localizer, "test.book", 3)
+	testData(localizer, "test.pen", 1)
+	testData(localizer, "test.pen", 2)
+	testData(localizer, "test.pen", 3)
 }
 
-func testData(svc i18n.I18n, id string, total int) {
+func testData(svc i18n.Localizer, id string, total int) {
 	fmt.Println("GetString:\t\t\t\t", svc.GetString(id, i18n.PluralCount, total, "total", total))
 	fmt.Println("GetString with kv:\t\t\t", svc.GetString(id, i18n.KeyValue().Plural(total).Add("total", total)...))
 	fmt.Println("GetStringEx:\t\t\t\t", svc.GetStringEx(id, map[string]int{"total": total}, total))

@@ -128,3 +128,63 @@ func (s *defaultI18n) GetStringEx(id string, data interface{}, pluralCount inter
 
 	return str
 }
+
+func (s *defaultI18n) GetLocalizer(lang string) (Localizer, error) {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	l := i18n.NewLocalizer(s.bundle, lang)
+	return &localizer{
+		localizer: l,
+	}, nil
+}
+
+type localizer struct {
+	localizer *i18n.Localizer
+}
+
+// GetString
+// Get i18n string
+func (s *localizer) GetString(id string, kvs ...interface{}) (message string) {
+	size := len(kvs)
+	conf := &i18n.LocalizeConfig{
+		MessageID: id,
+	}
+	if size > 0 {
+		if size&1 != 0 {
+			panic("KeyValue pair is odd ")
+		}
+		tmplData := make(map[string]interface{}, size>>1)
+		var key string
+		for i := range kvs {
+			if i&1 == 0 {
+				key = kvs[i].(string)
+			} else {
+				if key == PluralCount {
+					conf.PluralCount = kvs[i]
+				}
+				tmplData[key] = kvs[i]
+			}
+		}
+		conf.TemplateData = tmplData
+	}
+	str, err := s.localizer.Localize(conf)
+	if err != nil {
+		return id
+	}
+
+	return str
+}
+
+func (s *localizer) GetStringEx(id string, data interface{}, pluralCount interface{}) (message string) {
+	str, err := s.localizer.Localize(&i18n.LocalizeConfig{
+		MessageID:    id,
+		TemplateData: data,
+		PluralCount:  pluralCount,
+	})
+	if err != nil {
+		return id
+	}
+
+	return str
+}
